@@ -12,6 +12,11 @@ const routes = [
         component: () => import('./components/Pages/User/Registration.vue')
     },
     {
+        name: 'user.personal',
+        path: '/personal',
+        component: () => import('./components/Pages/User/Personal.vue')
+    },
+    {
         name: 'get',
         path: '/get',
         component: () => import('./components/Pages/Get.vue')
@@ -29,21 +34,22 @@ const router = new VueRouter.createRouter({
     routes: routes
 })
 
-// route.beforeEach((to, from, next) => {
-//
-//     const accessToken = localStorage.getItem('access_token')
-//
-//     if (!accessToken) {
-//         if (to.name !== 'users.login' && to.name !== 'users.registration') {
-//             return next({ name: 'users.login' })
-//         }
-//     } else {
-//         if (to.name === 'users.login' || to.name === 'users.registration') {
-//             return next({ name: 'users.personal' })
-//         }
-//     }
-//
-//     next()
-// })
+router.beforeEach((to,from, next) => {
+    const token = localStorage.getItem('x_xsrf_token')
+
+    if (!token) {
+        if (to.name === 'user.login' || to.name === 'user.registration') {
+            return next()
+        } else {
+            return next({ name: 'user.login' })
+        }
+    } else {
+        if (to.name === 'user.login' || to.name === 'user.registration') {
+            return next({ name: 'user.personal' })
+        }
+    }
+
+    next()
+})
 
 export default router
